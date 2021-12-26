@@ -1,0 +1,1 @@
+# Simple CLI tool shows how to use cli-runtime package for common flag handling
