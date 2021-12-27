@@ -1,0 +1,1 @@
+# Simple CRUD operations using typed Kubernetes Clientset
