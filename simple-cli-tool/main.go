@@ -9,8 +9,8 @@ import (
 
 // go run main.go --help
 // go run main.go --kubeconfig /foo/bar (panic: stat /foo/bar: no such file or directory)
-// go run main.go --context minikube
-// go run main.go --context cluster2
+// go run main.go --context shared1
+// go run main.go --context shared2
 
 func main() {
 	configFlags := genericclioptions.NewConfigFlags(true)

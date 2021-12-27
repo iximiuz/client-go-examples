@@ -2,21 +2,22 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"path"
 
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
 func main() {
-	rules := clientcmd.ClientConfigLoadingRules{
-		ExplicitPath: "/home/vagrant/.kube/config",
+	home, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
 	}
-	overrides := clientcmd.ConfigOverrides{
-		CurrentContext: "minikube",
-	}
+
 	config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
-		&rules,
-		&overrides,
+		&clientcmd.ClientConfigLoadingRules{ExplicitPath: path.Join(home, ".kube/config")},
+		&clientcmd.ConfigOverrides{CurrentContext: "shared2"},
 	).ClientConfig()
 	if err != nil {
 		panic(err.Error())
