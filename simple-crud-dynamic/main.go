@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"reflect"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -30,7 +31,6 @@ func main() {
 	}
 
 	namespace := "default"
-
 	res := schema.GroupVersionResource{Group: "", Version: "v1", Resource: "configmaps"}
 
 	desired := &unstructured.Unstructured{
@@ -41,10 +41,8 @@ func main() {
 				"namespace":    namespace,
 				"generateName": "simple-crud-dynamic-",
 			},
-			"spec": map[string]interface{}{
-				"data": map[string]interface{}{
-					"foo": "bar",
-				},
+			"data": map[string]interface{}{
+				"foo": "bar",
 			},
 		},
 	}
@@ -57,7 +55,13 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	fmt.Printf("Created ConfigMap %s/%s\n", namespace, created.GetName())
+
+	data, _, _ := unstructured.NestedStringMap(created.Object, "data")
+	if !reflect.DeepEqual(map[string]string{"foo": "bar"}, data) {
+		panic("Created ConfigMap has unexpected data")
+	}
 
 	// Read
 	read, err := client.
@@ -71,9 +75,16 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	fmt.Printf("Read ConfigMap %s/%s\n", namespace, read.GetName())
 
+	data, _, _ = unstructured.NestedStringMap(read.Object, "data")
+	if !reflect.DeepEqual(map[string]string{"foo": "bar"}, data) {
+		panic("Read ConfigMap has unexpected data")
+	}
+
 	// Update
+	unstructured.SetNestedField(read.Object, "qux", "data", "foo")
 	updated, err := client.
 		Resource(res).
 		Namespace(namespace).
@@ -85,7 +96,13 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+
 	fmt.Printf("Updated ConfigMap %s/%s\n", namespace, updated.GetName())
+
+	data, _, _ = unstructured.NestedStringMap(updated.Object, "data")
+	if !reflect.DeepEqual(map[string]string{"foo": "qux"}, data) {
+		panic("Updated ConfigMap has unexpected data")
+	}
 
 	// Delete
 	err = client.
