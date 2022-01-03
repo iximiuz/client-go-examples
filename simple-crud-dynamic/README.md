@@ -1,0 +1,1 @@
+# Simple CRUD operations using dynamic Kubernetes client

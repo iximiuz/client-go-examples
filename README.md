@@ -1,6 +1,6 @@
 # Kubernetes client-go examples
 
-Collection of mini-programs covering various [client-go](https://github.com/kubernetes/client-go) use cases.
+A collection of mini-programs covering various [client-go](https://github.com/kubernetes/client-go) use cases inspired by [client-go/examples](https://github.com/kubernetes/client-go/tree/master/examples).
 The intention (at least so far) is to test (more or less) fresh version of Go and packages against a few latest
 Kubernetes versions.
 
@@ -36,3 +36,6 @@ go run main.go
 - Add assertions to mini-programs
 - Test different Kubernetes versions
 - Setup GitHub action(s)
+- To be covered
+  - `kubernetes.Clientset.List()` use cases
+  - `retry.RetryOnConflict`
