@@ -1,11 +1,8 @@
-module github.com/iximiuz/client-go-examples/unstructured-converter
+module github.com/iximiuz/client-go-examples/json-to-unstructured
 
 go 1.17
 
-require (
-	k8s.io/api v0.23.1
-	k8s.io/apimachinery v0.23.1
-)
+require k8s.io/apimachinery v0.23.1
 
 require (
 	github.com/go-logr/logr v1.2.0 // indirect

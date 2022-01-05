@@ -1,1 +1,0 @@
-# How to convert unstructured objects to typed and vice versa
