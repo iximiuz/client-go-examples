@@ -41,9 +41,13 @@ func main() {
 	// Create one object before initializing the informer.
 	first := createConfigMap(client)
 
-	// Create a shared ConfigMap informer using the factory.
-	// 5*time.Second is a default resync period (for all informers).
+	// Create a shared informer factory.
+	//   - A factory is essentially a struct keeping a map (type -> informer).
+	//   - 5*time.Second is a default resync period (for all informers).
 	factory := informers.NewSharedInformerFactory(client, 5*time.Second)
+
+	// When informer is requested, the factory instantiates it and keeps the
+	// the reference to it in the internal map before returning.
 	cmInformer := factory.Core().V1().ConfigMaps()
 	cmInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
@@ -63,23 +67,27 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Start the informer machinery.
-	//   - Informer will fetch ALL the ConfigMaps from all the namespaces and trigger
-	//     AddFunc for each found ConfigMap object.
-	//     Use NewSharedInformerFactoryWithOptions() to fetch only a filtered subset of objects.
-	//   - All ConfigMaps added, updated, or deleted after the informer is synced
-	//     will trigger the corresponding callback call.
+	// Start the informers' machinery.
+	//   - Start() starts every Informer requested before using a goroutine per informer.
+	//   - An started Informer will fetch ALL the ConfigMaps from all the namespaces
+	//     (using a lister) and trigger `AddFunc`` for each found ConfigMap object.
+	//     Use NewSharedInformerFactoryWithOptions() to make the lister fetch only
+	//     a filtered subset of objects.
+	//   - All ConfigMaps added, updated, or deleted after the informer has been synced
+	//     will trigger the corresponding callback call (using a watch).
 	//   - Every 5*time.Second the UpdateFunc callback will be called for every
 	//     previously fetched ConfigMap (so-called resync period).
 	factory.Start(ctx.Done())
 
 	// factory.Start() releases the execution flow without waiting for all the
-	// internal machinery to warm up. We use cache.WaitForNamedCacheSync() here
+	// internal machinery to warm up. We use factory.WaitForCacheSync() here
 	// to poll for cmInformer.Informer().HasSynced(). Essentially, it's just a
-	// fancy way to write a while-loop checking HasSynced() flag with 100ms
-	// delay between iterations.
-	if !cache.WaitForNamedCacheSync("my-example", ctx.Done(), cmInformer.Informer().HasSynced) {
-		panic("Failed to sync cache")
+	// fancy way to write a while-loop checking HasSynced() flags for all the
+	// registered informers with 100ms delay between iterations.
+	for informerType, ok := range factory.WaitForCacheSync(ctx.Done()) {
+		if !ok {
+			panic(fmt.Sprintf("Failed to sync cache for %v", informerType))
+		}
 	}
 
 	// Search for the existing ConfigMap object using the label selector.
