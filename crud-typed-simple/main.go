@@ -33,7 +33,7 @@ func main() {
 
 	desired := corev1.ConfigMap{Data: map[string]string{"foo": "bar"}}
 	desired.Namespace = namespace
-	desired.GenerateName = "simple-crud-typed-"
+	desired.GenerateName = "crud-typed-simple-"
 
 	// Create
 	created, err := client.

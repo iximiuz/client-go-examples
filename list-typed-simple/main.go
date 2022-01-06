@@ -30,11 +30,11 @@ func main() {
 	}
 
 	namespace := "default"
-	label := "simple-list-typed-" + rand.String(6)
+	label := "list-typed-simple-" + rand.String(6)
 
 	desired := corev1.ConfigMap{Data: map[string]string{"foo": "bar"}}
 	desired.Namespace = namespace
-	desired.GenerateName = "simple-list-typed-"
+	desired.GenerateName = "list-typed-simple-"
 	desired.SetLabels(map[string]string{"example": label})
 
 	// Create a bunch of objects first.

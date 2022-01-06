@@ -39,7 +39,7 @@ func main() {
 			"kind":       "ConfigMap",
 			"metadata": map[string]interface{}{
 				"namespace":    namespace,
-				"generateName": "simple-crud-dynamic-",
+				"generateName": "crud-dynamic-simple-",
 			},
 			"data": map[string]interface{}{
 				"foo": "bar",

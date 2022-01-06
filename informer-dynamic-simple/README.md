@@ -1,0 +1,1 @@
+# Cached listing and watching unstructured Kubernetes objects using shared dynamic informer

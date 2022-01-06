@@ -7,19 +7,25 @@ import (
 	"path"
 	"time"
 
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/rand"
-	"k8s.io/client-go/informers"
-	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/dynamic/dynamicinformer"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 )
 
 var (
-	namespace = "default"
-	label     = "informer-typed-simple-" + rand.String(6)
+	namespace         = "default"
+	label             = "informer-dynamic-simple-" + rand.String(6)
+	ConfigMapResource = schema.GroupVersionResource{
+		Group:    "",
+		Version:  "v1",
+		Resource: "configmaps",
+	}
 )
 
 func main() {
@@ -33,7 +39,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	client, err := kubernetes.NewForConfig(config)
+	client, err := dynamic.NewForConfig(config)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -44,22 +50,22 @@ func main() {
 	// Create a shared informer factory.
 	//   - A factory is essentially a struct keeping a map (type -> informer).
 	//   - 5*time.Second is a default resync period (for all informers).
-	factory := informers.NewSharedInformerFactory(client, 5*time.Second)
+	factory := dynamicinformer.NewDynamicSharedInformerFactory(client, 5*time.Second)
 
 	// When informer is requested, the factory instantiates it and keeps the
 	// the reference to it in the internal map before returning.
-	cmInformer := factory.Core().V1().ConfigMaps()
-	cmInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+	dynamicInformer := factory.ForResource(ConfigMapResource)
+	dynamicInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(obj interface{}) {
-			cm := obj.(*corev1.ConfigMap)
+			cm := obj.(*unstructured.Unstructured)
 			fmt.Printf("Informer event: ConfigMap ADDED %s/%s\n", cm.GetNamespace(), cm.GetName())
 		},
 		UpdateFunc: func(old, new interface{}) {
-			cm := old.(*corev1.ConfigMap)
+			cm := old.(*unstructured.Unstructured)
 			fmt.Printf("Informer event: ConfigMap UPDATED %s/%s\n", cm.GetNamespace(), cm.GetName())
 		},
 		DeleteFunc: func(obj interface{}) {
-			cm := obj.(*corev1.ConfigMap)
+			cm := obj.(*unstructured.Unstructured)
 			fmt.Printf("Informer event: ConfigMap DELETED %s/%s\n", cm.GetNamespace(), cm.GetName())
 		},
 	})
@@ -84,9 +90,9 @@ func main() {
 	// to poll for cmInformer.Informer().HasSynced(). Essentially, it's just a
 	// fancy way to write a while-loop checking HasSynced() flags for all the
 	// registered informers with 100ms delay between iterations.
-	for informerType, ok := range factory.WaitForCacheSync(ctx.Done()) {
+	for gvr, ok := range factory.WaitForCacheSync(ctx.Done()) {
 		if !ok {
-			panic(fmt.Sprintf("Failed to sync cache for %v", informerType))
+			panic(fmt.Sprintf("Failed to sync cache for resource %v", gvr))
 		}
 	}
 
@@ -95,7 +101,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	list, err := cmInformer.Lister().List(selector)
+	list, err := dynamicInformer.Lister().List(selector)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -114,20 +120,28 @@ func main() {
 	time.Sleep(10 * time.Second)
 }
 
-func createConfigMap(client kubernetes.Interface) *corev1.ConfigMap {
-	cm := &corev1.ConfigMap{Data: map[string]string{"foo": "bar"}}
-	cm.Namespace = namespace
-	cm.GenerateName = "informer-typed-simple-"
-	cm.SetLabels(map[string]string{"example": label})
+func createConfigMap(client dynamic.Interface) *unstructured.Unstructured {
+	cm := &unstructured.Unstructured{
+		Object: map[string]interface{}{
+			"apiVersion": "v1",
+			"kind":       "ConfigMap",
+			"metadata": map[string]interface{}{
+				"namespace":    namespace,
+				"generateName": "informer-dynamic-simple-",
+				"labels": map[string]interface{}{
+					"example": label,
+				},
+			},
+			"data": map[string]interface{}{
+				"foo": "bar",
+			},
+		},
+	}
 
 	cm, err := client.
-		CoreV1().
-		ConfigMaps(namespace).
-		Create(
-			context.Background(),
-			cm,
-			metav1.CreateOptions{},
-		)
+		Resource(ConfigMapResource).
+		Namespace(namespace).
+		Create(context.Background(), cm, metav1.CreateOptions{})
 	if err != nil {
 		panic(err.Error())
 	}
@@ -136,15 +150,14 @@ func createConfigMap(client kubernetes.Interface) *corev1.ConfigMap {
 	return cm
 }
 
-func deleteConfigMap(client kubernetes.Interface, cm *corev1.ConfigMap) {
+func deleteConfigMap(client dynamic.Interface, cm *unstructured.Unstructured) {
 	err := client.
-		CoreV1().
-		ConfigMaps(cm.GetNamespace()).
-		Delete(
-			context.Background(),
-			cm.GetName(),
-			metav1.DeleteOptions{},
-		)
+		Resource(ConfigMapResource).
+		Namespace(cm.GetNamespace()).
+		Delete(context.Background(), cm.GetName(), metav1.DeleteOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
 	if err != nil {
 		panic(err.Error())
 	}

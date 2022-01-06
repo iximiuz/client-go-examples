@@ -16,7 +16,7 @@ import (
 
 var (
 	namespace = "default"
-	label     = "simple-list-typed-" + rand.String(6)
+	label     = "watch-typed-simple-" + rand.String(6)
 )
 
 func main() {
@@ -77,7 +77,7 @@ func main() {
 func createConfigMap(client kubernetes.Interface) *corev1.ConfigMap {
 	cm := &corev1.ConfigMap{Data: map[string]string{"foo": "bar"}}
 	cm.Namespace = namespace
-	cm.GenerateName = "simple-list-typed-"
+	cm.GenerateName = "watch-typed-simple-"
 	cm.SetLabels(map[string]string{"example": label})
 
 	cm, err := client.
