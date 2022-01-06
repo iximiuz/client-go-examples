@@ -1,0 +1,1 @@
+# Cache-less listing of Kubernetes objects using typed client
