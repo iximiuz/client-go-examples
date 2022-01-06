@@ -1,4 +1,4 @@
-module github.com/iximiuz/client-go-examples/simple-informer-typed
+module github.com/iximiuz/client-go-examples/crud-typed-simple
 
 go 1.17
 

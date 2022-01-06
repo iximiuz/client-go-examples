@@ -1,4 +1,4 @@
-module github.com/iximiuz/client-go-examples/simple-watch-typed
+module github.com/iximiuz/client-go-examples/list-typed-simple
 
 go 1.17
 

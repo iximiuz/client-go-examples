@@ -1,4 +1,4 @@
-# How to deserialize JSON into unstructured objects and vice versa
+# How to serialize unstructured objects into JSON and vice versa
 
 This mini-program demonstrates usage of:
 
