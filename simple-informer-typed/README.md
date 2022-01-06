@@ -1,0 +1,1 @@
+# Cached listing and watching Kubernetes objects using shared informer
