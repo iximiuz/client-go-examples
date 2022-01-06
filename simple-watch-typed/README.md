@@ -1,0 +1,1 @@
+# Cache-less watching of Kubernetes objects using typed client
