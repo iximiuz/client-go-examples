@@ -66,12 +66,18 @@ func main() {
 	// Start the informer machinery.
 	//   - Informer will fetch ALL the ConfigMaps from all the namespaces and trigger
 	//     AddFunc for each found ConfigMap object.
-	//     Use NewFilteredSharedInformerFactory to fetch only a filtered subset of objects.
+	//     Use NewSharedInformerFactoryWithOptions() to fetch only a filtered subset of objects.
 	//   - All ConfigMaps added, updated, or deleted after the informer is synced
 	//     will trigger the corresponding callback call.
 	//   - Every 5*time.Second the UpdateFunc callback will be called for every
 	//     previously fetched ConfigMap (so-called resync period).
 	factory.Start(ctx.Done())
+
+	// factory.Start() releases the execution flow without waiting for all the
+	// internal machinery to warm up. We use cache.WaitForNamedCacheSync() here
+	// to poll for cmInformer.Informer().HasSynced(). Essentially, it's just a
+	// fancy way to write a while-loop checking HasSynced() flag with 100ms
+	// delay between iterations.
 	if !cache.WaitForNamedCacheSync("my-example", ctx.Done(), cmInformer.Informer().HasSynced) {
 		panic("Failed to sync cache")
 	}
