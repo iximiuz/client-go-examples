@@ -33,9 +33,15 @@ go run main.go
 
 ## TODO
 
-- Add assertions to mini-programs
+- Add more assertions to mini-programs
 - Test different Kubernetes versions
 - Setup GitHub action(s)
-- To be covered
-  - `kubernetes.Clientset.List()` use cases
+- Examples to be covered
+  - `delete` + owner references
+  - `delete collection`
+  - `list` filtration
+  - `watch` filtration
+  - `informer` filtration
+  - `patch` with different strategies
+  - `workqueue` - controllers' fundamentals
   - `retry.RetryOnConflict`
