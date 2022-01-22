@@ -1,1 +1,1 @@
-# How to serialize typed objects into JSON and vice versa
+# How to serialize typed Kubernetes objects into JSON and vice versa
