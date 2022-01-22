@@ -24,11 +24,11 @@ func main() {
 			// - ToRESTMapper
 			// - ToDiscoveryClient
 
-			kubconfig, err := configFlags.ToRawKubeConfigLoader().RawConfig()
+			kubeconfig, err := configFlags.ToRawKubeConfigLoader().RawConfig()
 			if err != nil {
 				panic(err.Error())
 			}
-			for name := range kubconfig.Contexts {
+			for name := range kubeconfig.Contexts {
 				fmt.Printf("Found context %s\n", name)
 			}
 

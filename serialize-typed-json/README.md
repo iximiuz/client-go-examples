@@ -1,0 +1,1 @@
+# How to serialize typed objects into JSON and vice versa

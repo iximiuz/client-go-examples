@@ -37,11 +37,13 @@ go run main.go
 - Test different Kubernetes versions
 - Setup GitHub action(s)
 - Examples to be covered
-  - `delete` + owner references
+  - `delete`
   - `delete collection`
   - `list` filtration
   - `watch` filtration
   - `informer` filtration
   - `patch` with different strategies
+  - field selectors
+  - `ownerReference` (one and many)
+  - optimistic locking and `retry.RetryOnConflict`
   - `workqueue` - controllers' fundamentals
-  - `retry.RetryOnConflict`
