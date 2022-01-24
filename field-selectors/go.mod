@@ -1,4 +1,4 @@
-module github.com/iximiuz/client-go-examples/label-selectors
+module github.com/iximiuz/client-go-examples/field-selectors
 
 go 1.17
 

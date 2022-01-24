@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	lbl := labels.Set{"foo": "bar", "baz": "qux"}
+	lbls := labels.Set{"foo": "bar", "baz": "qux"}
 
 	sel := labels.NewSelector()
 	req, err := labels.NewRequirement("foo", selection.Equals, []string{"bar"})
@@ -16,10 +16,10 @@ func main() {
 		panic(err.Error())
 	}
 	sel.Add(*req)
-	if sel.Matches(lbl) {
-		fmt.Printf("Selector %v matched label set %v\n", sel, lbl)
+	if sel.Matches(lbls) {
+		fmt.Printf("Selector %v matched label set %v\n", sel, lbls)
 	} else {
-		panic("Selector should have been matched labels")
+		panic("Selector should have matched labels")
 	}
 
 	// Selector from string expression.
@@ -27,9 +27,9 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	if sel.Matches(lbl) {
-		fmt.Printf("Selector %v matched label set %v\n", sel, lbl)
+	if sel.Matches(lbls) {
+		fmt.Printf("Selector %v matched label set %v\n", sel, lbls)
 	} else {
-		panic("Selector should have been matched labels")
+		panic("Selector should have matched labels")
 	}
 }

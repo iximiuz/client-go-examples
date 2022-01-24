@@ -43,7 +43,6 @@ go run main.go
   - `watch` filtration
   - `informer` filtration
   - `patch` with different strategies
-  - field selectors
   - `ownerReference` (one and many)
   - optimistic locking and `retry.RetryOnConflict`
   - `workqueue` - controllers' fundamentals

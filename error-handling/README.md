@@ -1,0 +1,1 @@
+# Various API error handling examples

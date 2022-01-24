@@ -1,1 +1,1 @@
-# How to construct labels and selectors
+# How to construct labels and label selectors
