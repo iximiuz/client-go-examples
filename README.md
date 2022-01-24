@@ -46,3 +46,4 @@ go run main.go
   - `ownerReference` (one and many)
   - optimistic locking and `retry.RetryOnConflict`
   - `workqueue` - controllers' fundamentals
+  - https://stackoverflow.com/questions/56115197/how-to-idiomatically-fill-empty-fields-with-default-values-for-kubernetes-api-ob
