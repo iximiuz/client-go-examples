@@ -37,12 +37,16 @@ go run main.go
 - Test different Kubernetes versions
 - Setup GitHub action(s)
 - Examples to be covered
+  - setting API request timeout
+  - configuring API request throttling
   - `delete`
   - `delete collection`
   - `list` filtration
   - `watch` filtration
   - `informer` filtration
   - `patch` with different strategies
+  - `Server Side Apply` (SSA)
+  - working with subresources
   - `ownerReference` (one and many)
   - optimistic locking and `retry.RetryOnConflict`
   - `workqueue` - controllers' fundamentals
