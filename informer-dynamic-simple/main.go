@@ -75,7 +75,7 @@ func main() {
 
 	// Start the informers' machinery.
 	//   - Start() starts every Informer requested before using a goroutine per informer.
-	//   - An started Informer will fetch ALL the ConfigMaps from all the namespaces
+	//   - A started Informer will fetch ALL the ConfigMaps from all the namespaces
 	//     (using a lister) and trigger `AddFunc`` for each found ConfigMap object.
 	//     Use NewSharedInformerFactoryWithOptions() to make the lister fetch only
 	//     a filtered subset of objects.
