@@ -50,3 +50,10 @@ go run main.go
   - `ownerReference` (one and many)
   - optimistic locking and `retry.RetryOnConflict`
   - https://stackoverflow.com/questions/56115197/how-to-idiomatically-fill-empty-fields-with-default-values-for-kubernetes-api-ob
+
+
+## Contribution
+
+Contributions are always welcome! Want to participate but don't know where to start? The TODO list above could give you some ideas.
+Before jumping to the code, please create an issue describing the addition/change first. This will allow me to coordinate the effort
+and make sure multiple people don't work on the same task.
