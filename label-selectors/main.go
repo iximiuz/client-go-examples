@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	sel.Add(*req)
+	sel = sel.Add(*req)
 	if sel.Matches(lbls) {
 		fmt.Printf("Selector %v matched label set %v\n", sel, lbls)
 	} else {
