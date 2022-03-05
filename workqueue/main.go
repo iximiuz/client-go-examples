@@ -98,6 +98,8 @@ func main() {
 		// A better way is to use wait.Until() from "k8s.io/apimachinery/pkg/util/wait"
 		// for every worker.
 		fmt.Printf("Starting worker %d\n", i)
+
+		// worker()
 		go func(n int) {
 			for {
 				// Someone said we're done?
@@ -116,49 +118,52 @@ func main() {
 				}
 				fmt.Printf("Worker %d is about to start process new item %s.\n", n, key)
 
-				// Tell the queue that we are done with processing this key.
-				// This unblocks the key for other workers and allows safe parallel
-				// processing because two objects with the same key are never processed
-				// in parallel.
-				defer queue.Done(key)
+				// processSingleItem() - scoped to utilize defer and premature returns.
+				func() {
+					// Tell the queue that we are done with processing this key.
+					// This unblocks the key for other workers and allows safe parallel
+					// processing because two objects with the same key are never processed
+					// in parallel.
+					defer queue.Done(key)
 
-				// YOUR CONTROLLER'S BUSINESS LOGIC GOES HERE
-				obj, err := dynamicInformer.Lister().Get(key.(string))
-				if err == nil {
-					fmt.Printf("Worker %d found ConfigMap object in informer's cahce %#v.\n", n, obj)
-					// RECONCILE THE OBJECT - PUT YOUR BUSINESS LOGIC HERE.
-					if n == 1 {
-						err = fmt.Errorf("worker %d is a chronic failure", n)
+					// YOUR CONTROLLER'S BUSINESS LOGIC GOES HERE
+					obj, err := dynamicInformer.Lister().Get(key.(string))
+					if err == nil {
+						fmt.Printf("Worker %d found ConfigMap object in informer's cahce %#v.\n", n, obj)
+						// RECONCILE THE OBJECT - PUT YOUR BUSINESS LOGIC HERE.
+						if n == 1 {
+							err = fmt.Errorf("worker %d is a chronic failure", n)
+						}
+					} else {
+						fmt.Printf("Worker %d got error %v while looking up ConfigMap object in informer's cache.\n", n, err)
 					}
-				} else {
-					fmt.Printf("Worker %d got error %v while looking up ConfigMap object in informer's cache.\n", n, err)
-				}
 
-				// Handle the error if something went wrong during the execution of
-				// the business logic.
+					// Handle the error if something went wrong during the execution of
+					// the business logic.
 
-				if err == nil {
-					// The key has been handled successfully - forget about it. In particular, it
-					// ensures that future processing of updates for this key won't be rate limited
-					// because of errors on previous attempts.
-					fmt.Printf("Worker %d reconciled ConfigMap %s successfully. Removing it from te queue.\n", n, key)
-					queue.Forget(key)
-					continue
-				}
+					if err == nil {
+						// The key has been handled successfully - forget about it. In particular, it
+						// ensures that future processing of updates for this key won't be rate limited
+						// because of errors on previous attempts.
+						fmt.Printf("Worker %d reconciled ConfigMap %s successfully. Removing it from te queue.\n", n, key)
+						queue.Forget(key)
+						return
+					}
 
-				// We retry no more than K=5 times.
-				if queue.NumRequeues(key) >= 5 {
-					fmt.Printf("Worker %d gave up on processing %s. Removing it from the queue.\n", n, key)
-					queue.Forget(key)
-					continue
-				}
+					// We retry no more than K=5 times.
+					if queue.NumRequeues(key) >= 5 {
+						fmt.Printf("Worker %d gave up on processing %s. Removing it from the queue.\n", n, key)
+						queue.Forget(key)
+						return
+					}
 
-				// Re-enqueue the key rate to be (re-)processed later again.
-				// Notice that deferred queue.Done(key) call above knows how
-				// to deal with re-enqueueing - it marks the key as done and
-				// then re-appends it again.
-				fmt.Printf("Worker %d failed to process %s. Putting it back to the queue to retry later.\n", n, key)
-				queue.AddRateLimited(key)
+					// Re-enqueue the key rate to be (re-)processed later again.
+					// Notice that deferred queue.Done(key) call above knows how
+					// to deal with re-enqueueing - it marks the key as done and
+					// then re-appends it again.
+					fmt.Printf("Worker %d failed to process %s. Putting it back to the queue to retry later.\n", n, key)
+					queue.AddRateLimited(key)
+				}()
 			}
 		}(i)
 	}
@@ -178,7 +183,7 @@ func main() {
 	deleteConfigMap(client, cm5)
 
 	// Stay for a couple more seconds to let the program finish.
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 	queue.ShutDown()
 	cancel()
 	time.Sleep(1 * time.Second)
