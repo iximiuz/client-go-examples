@@ -1,4 +1,4 @@
-module github.com/iximiuz/client-go-examples/cli-runtime-resources
+module github.com/iximiuz/client-go-examples/cli-runtime-resources-from-cluster
 
 go 1.17
 

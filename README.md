@@ -12,7 +12,7 @@ What tested at the moment:
 
 ## Setup
 
-All examples expect `minikube` with at least two Kubernetes clusters - `shared1` and `shared2`.
+Most examples expect `minikube` with at least two Kubernetes clusters - `shared1` and `shared2`.
 
 ```bash
 curl -sLS https://get.arkade.dev | sudo sh
