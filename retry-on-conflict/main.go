@@ -53,12 +53,13 @@ func main() {
 	}
 
 	retry.RetryOnConflict(retry.DefaultRetry, func() error {
+		// get two reference to the same config map
+		// you'd typically only get the resource once
+		// and update it. We are just attempting to show failure
 		one, err := getConfigMap(client, name, namespace)
 		if err != nil {
 			return err
 		}
-		// get point for configmap twice and only update one
-		// then try to update two it will fail
 		two, err := getConfigMap(client, name, namespace)
 		if err != nil {
 			return err
@@ -69,6 +70,7 @@ func main() {
 			"changed": fmt.Sprint(rand.Intn(100)),
 		}
 
+		// update the first reference
 		_, err = client.
 			CoreV1().
 			ConfigMaps(namespace).
@@ -82,6 +84,7 @@ func main() {
 		}
 		fmt.Println("Successfully updated ConfigMap")
 
+		// this update will always fail
 		_, err = client.
 			CoreV1().
 			ConfigMaps(namespace).
