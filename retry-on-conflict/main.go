@@ -39,7 +39,6 @@ func main() {
 		Data: map[string]string{"foo": "bar"},
 	}
 
-	defer deleteConfigMap(client, name, namespace)
 	_, err = client.
 		CoreV1().
 		ConfigMaps(namespace).
@@ -51,55 +50,71 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
+	defer deleteConfigMap(client, name, namespace)
 
-	retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		// get two reference to the same config map
-		// you'd typically only get the resource once
-		// and update it. We are just attempting to show failure
-		one, err := getConfigMap(client, name, namespace)
+	firstTry := true
+	err = retry.RetryOnConflict(retry.DefaultRetry, func() error {
+		// always fetch the new version from the api server
+		c, err := getConfigMap(client, name, namespace)
 		if err != nil {
 			return err
 		}
-		two, err := getConfigMap(client, name, namespace)
-		if err != nil {
-			return err
+
+		// simulate an external update
+		// this code will not exist in a typical implementation
+		// this is just for demonstration
+		if firstTry {
+			firstTry = false
+			simulateExternalUpdate(client, name, namespace)
 		}
 
 		// generate random int so we're always different
-		one.Data = map[string]string{
+		c.Data = map[string]string{
 			"changed": fmt.Sprint(rand.Intn(100)),
 		}
 
-		// update the first reference
 		_, err = client.
 			CoreV1().
 			ConfigMaps(namespace).
 			Update(
 				context.Background(),
-				one,
+				c,
 				metav1.UpdateOptions{},
 			)
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println("Successfully updated ConfigMap")
-
-		// this update will always fail
-		_, err = client.
-			CoreV1().
-			ConfigMaps(namespace).
-			Update(
-				context.Background(),
-				two,
-				metav1.UpdateOptions{},
-			)
-		fmt.Println(err)
 		return err
 	})
+	if err != nil {
+		// ensure no other error type occurred
+		panic(err)
+	}
+	fmt.Println("Successfully updated ConfigMap")
 }
 
-func getConfigMap(c *kubernetes.Clientset, name, ns string) (*corev1.ConfigMap, error) {
-	return c.
+func simulateExternalUpdate(k *kubernetes.Clientset, name, ns string) {
+	cm, err := getConfigMap(k, name, ns)
+	if err != nil {
+		panic(err)
+	}
+	cm.Data = map[string]string{
+		"external": "update",
+	}
+	_, err = k.CoreV1().
+		ConfigMaps(ns).
+		Update(
+			context.Background(),
+			cm,
+			metav1.UpdateOptions{},
+		)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func getConfigMap(k *kubernetes.Clientset, name, ns string) (*corev1.ConfigMap, error) {
+	return k.
 		CoreV1().
 		ConfigMaps(ns).
 		Get(

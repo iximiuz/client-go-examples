@@ -39,21 +39,13 @@ if err != nil {
 
 ## This Example
 
-This example is intended to fail to show `retry.RetryOnConflict` attempting to
-retry the operation. The expected outcome is:
+This example is intended to fail once. The following is the expected
+outcome:
 
 ```log
 $ go run main.go 
-Successfully updated ConfigMap
 Operation cannot be fulfilled on configmaps "foobar": the object has been modified; please apply your changes to the latest version and try again
 Successfully updated ConfigMap
-Operation cannot be fulfilled on configmaps "foobar": the object has been modified; please apply your changes to the latest version and try again
-Successfully updated ConfigMap
-Operation cannot be fulfilled on configmaps "foobar": the object has been modified; please apply your changes to the latest version and try again
-Successfully updated ConfigMap
-Operation cannot be fulfilled on configmaps "foobar": the object has been modified; please apply your changes to the latest version and try again
-Successfully updated ConfigMap
-Operation cannot be fulfilled on configmaps "foobar": the object has been modified; please apply your changes to the latest version and try again
 ```
 
 [see the official docs]: https://pkg.go.dev/k8s.io/client-go/util/retry#RetryOnConflict
