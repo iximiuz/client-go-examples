@@ -48,7 +48,7 @@ go run main.go
   - `Server Side Apply` (SSA)
   - working with subresources
   - `ownerReference` (one and many)
-  - optimistic locking and `retry.RetryOnConflict`
+  - optimistic locking
   - https://stackoverflow.com/questions/56115197/how-to-idiomatically-fill-empty-fields-with-default-values-for-kubernetes-api-ob
 
 
