@@ -1,6 +1,6 @@
 module github.com/iximiuz/client-go-examples/cli-runtime-resources-from-file
 
-go 1.17
+go 1.18
 
 require (
 	github.com/spf13/cobra v1.4.0

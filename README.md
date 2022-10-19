@@ -6,9 +6,9 @@ Kubernetes versions.
 
 What tested at the moment:
 
-- `go 1.17`
-- `k8s.io/client-go v0.23.1`
-- `Kubernetes v1.22.3`
+- `go 1.18`
+- `k8s.io/client-go v0.23.1 v0.24.7 v0.25.3`
+- `Kubernetes v1.22.15 1.23.12 v1.24.6 v1.25.2`
 
 ## Setup
 
@@ -34,8 +34,6 @@ go run main.go
 ## TODO
 
 - Add more assertions to mini-programs
-- Test different Kubernetes versions
-- Setup GitHub action(s)
 - Examples to be covered
   - setting API request timeout
   - configuring API request throttling

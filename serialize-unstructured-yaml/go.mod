@@ -1,6 +1,6 @@
 module github.com/iximiuz/client-go-examples/serialize-unstructured-yaml
 
-go 1.17
+go 1.18
 
 require k8s.io/apimachinery v0.23.1
 
