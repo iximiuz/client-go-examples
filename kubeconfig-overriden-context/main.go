@@ -17,7 +17,7 @@ func main() {
 
 	config, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
 		&clientcmd.ClientConfigLoadingRules{ExplicitPath: path.Join(home, ".kube/config")},
-		&clientcmd.ConfigOverrides{CurrentContext: "shared2"},
+		&clientcmd.ConfigOverrides{CurrentContext: os.Args[1]},
 	).ClientConfig()
 	if err != nil {
 		panic(err.Error())

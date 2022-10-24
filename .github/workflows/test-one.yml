@@ -13,6 +13,7 @@ on:
 
 jobs:
   test-one:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -34,4 +35,4 @@ jobs:
         go mod edit -replace k8s.io/apimachinery=k8s.io/apimachinery@v${{ inputs.k8s_package_ver }}
         go mod edit -replace k8s.io/cli-runtime=k8s.io/cli-runtime@v${{ inputs.k8s_package_ver }}
         go mod tidy
-        go run main.go
+        make test
