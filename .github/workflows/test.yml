@@ -69,7 +69,6 @@ jobs:
       matrix:
         example_program: ${{ fromJson(needs.prepare.outputs.dirs) }}
         k8s_cluster_ver:
-        - "1.21.14"
         - "1.22.15"
         - "1.23.12"
         - "1.24.6"
