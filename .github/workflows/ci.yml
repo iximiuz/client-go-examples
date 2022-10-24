@@ -1,0 +1,48 @@
+name: test
+
+on:
+  push:
+    branches:
+    - '*'
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: make-list
+        run: |
+          echo "::set-output name=dirs::$(ls -d */ | jq -R -s -c 'split("\n")[:-1]')"
+    outputs:
+      dirs: ${{steps.make-list.outputs.dirs}}
+  test:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        example_to_test: ${{fromJson(needs.prepare.outputs.dirs)}}
+        k8s_client_go_version: [v0.23.1, v0.24.7, v0.25.3]
+        # kubernetes_version: [1.17.17, 1.18.20, 1.19.16, 1.20.15, 1.21.14, 1.22.15, 1.23.12, 1.24.6, 1.25.2]
+        kubernetes_version: [1.17.17]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.17.x
+      - name: Create k8s Kind Cluster
+        uses: helm/kind-action@v1.3.0
+        with:
+          node_image: kindest/node:v${{ matrix.kubernetes_version }}
+      - name: Run tests for ${{matrix.example_to_test}}
+        run: |
+          cd ${{matrix.example_to_test}}
+          go mod edit -replace k8s.io/client-go=k8s.io/client-go@${{matrix.k8s_client_go_version}}
+          go mod tidy
+          go run main.go
