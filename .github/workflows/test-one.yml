@@ -1,0 +1,37 @@
+on:
+  workflow_call:
+    inputs:
+      example_program:
+        required: true
+        type: string
+      k8s_cluster_ver:
+        required: true
+        type: string
+      k8s_package_ver:
+        required: true
+        type: string
+
+jobs:
+  test-one:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 1
+    - name: Install Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: "1.18.x"
+    - name: Create k8s cluster (using kind)
+      uses: helm/kind-action@v1.3.0
+      with:
+        node_image: kindest/node:v${{ inputs.k8s_cluster_ver }}
+    - name: Run mini-program ${{ inputs.example_program }} on k8s v${{ inputs.k8s_cluster_ver }} using client-go ${{ inputs.k8s_package_ver }}
+      run: |
+        cd ${{ inputs.example_program }}
+        go mod edit -replace k8s.io/client-go=k8s.io/client-go@v${{ inputs.k8s_package_ver }}
+        go mod edit -replace k8s.io/api=k8s.io/api@v${{ inputs.k8s_package_ver }}
+        go mod edit -replace k8s.io/apimachinery=k8s.io/apimachinery@v${{ inputs.k8s_package_ver }}
+        go mod edit -replace k8s.io/cli-runtime=k8s.io/cli-runtime@v${{ inputs.k8s_package_ver }}
+        go mod tidy
+        go run main.go

@@ -1,6 +1,6 @@
 module github.com/iximiuz/client-go-examples/cli-runtime-flags
 
-go 1.17
+go 1.18
 
 require (
 	k8s.io/cli-runtime v0.23.1
