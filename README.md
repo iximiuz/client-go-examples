@@ -1,5 +1,9 @@
 # Kubernetes client-go examples
 
+```diff
+- Support development of this project > patreon.com/iximiuz
+```
+
 A collection of mini-programs covering various [client-go](https://github.com/kubernetes/client-go) use cases inspired by [client-go/examples](https://github.com/kubernetes/client-go/tree/master/examples).
 The intention (at least so far) is to test (more or less) fresh version of Go and packages against a few latest
 Kubernetes versions.
