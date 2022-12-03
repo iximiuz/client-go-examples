@@ -1,7 +1,7 @@
 # Kubernetes client-go examples
 
 ```diff
-- Support development of this project > patreon.com/iximiuz
+! Support development of this project > patreon.com/iximiuz
 ```
 
 A collection of mini-programs covering various [client-go](https://github.com/kubernetes/client-go) use cases inspired by [client-go/examples](https://github.com/kubernetes/client-go/tree/master/examples).
