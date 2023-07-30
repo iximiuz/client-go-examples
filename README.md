@@ -4,11 +4,12 @@
 ! Support development of this project > patreon.com/iximiuz
 ```
 
-A collection of mini-programs covering various [client-go](https://github.com/kubernetes/client-go) use cases inspired by [client-go/examples](https://github.com/kubernetes/client-go/tree/master/examples).
-The intention (at least so far) is to test (more or less) fresh version of Go and packages against a few latest
+A collection of mini-programs demonstrating various [client-go](https://github.com/kubernetes/client-go) use cases augmented by a [preconfigured online development environment](https://labs.iximiuz.com/playgrounds/k8s-client-go/). Inspired by [client-go/examples](https://github.com/kubernetes/client-go/tree/master/examples).
+
+The intention (at least so far) is to test a (more or less) fresh version of Go and packages against a few latest
 Kubernetes versions.
 
-What tested at the moment:
+What is tested at the moment:
 
 - `go 1.18`
 - `k8s.io/client-go v0.23.1 v0.24.7 v0.25.3`
