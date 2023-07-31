@@ -1,0 +1,28 @@
+go 1.18
+
+use (
+	./cli-runtime-flags
+	./cli-runtime-printers
+	./cli-runtime-resources-from-cluster
+	./cli-runtime-resources-from-file
+	./convert-unstructured-typed
+	./crud-dynamic-simple
+	./crud-typed-simple
+	./error-handling
+	./field-selectors
+	./informer-dynamic-simple
+	./informer-typed-simple
+	./kubeconfig-default-context
+	./kubeconfig-from-yaml
+	./kubeconfig-list-contexts
+	./kubeconfig-overridden-context
+	./label-selectors
+	./list-typed-simple
+	./retry-on-conflict
+	./serialize-typed-json
+	./serialize-typed-yaml
+	./serialize-unstructured-json
+	./serialize-unstructured-yaml
+	./watch-typed-simple
+	./workqueue
+)
