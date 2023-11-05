@@ -22,12 +22,12 @@ jobs:
     - name: Install Go
       uses: actions/setup-go@v3
       with:
-        go-version: "1.18.x"
-    - name: Create k8s cluster (using kind)
-      uses: helm/kind-action@v1.3.0
+        go-version: "1.21.3"
+    - name: Create test Kubernetes cluster (using kind)
+      uses: helm/kind-action@v1.5.0
       with:
         node_image: kindest/node:v${{ inputs.k8s_cluster_ver }}
-    - name: Run mini-program ${{ inputs.example_program }} on k8s v${{ inputs.k8s_cluster_ver }} using client-go ${{ inputs.k8s_package_ver }}
+    - name: Run mini-program ${{ inputs.example_program }} on Kubernetes v${{ inputs.k8s_cluster_ver }} using client-go v${{ inputs.k8s_package_ver }}
       run: |
         cd ${{ inputs.example_program }}
         go mod edit -replace k8s.io/client-go=k8s.io/client-go@v${{ inputs.k8s_package_ver }}
