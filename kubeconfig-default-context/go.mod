@@ -1,6 +1,6 @@
 module github.com/iximiuz/client-go-examples/kubeconfig-default-context
 
-go 1.21.3
+go 1.22.0
 
 require (
 	k8s.io/client-go v0.28.3

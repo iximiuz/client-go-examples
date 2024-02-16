@@ -1,6 +1,6 @@
 module github.com/iximiuz/client-go-examples/patch-add-ephemeral-container
 
-go 1.21.3
+go 1.22.0
 
 require (
 	k8s.io/api v0.28.3
