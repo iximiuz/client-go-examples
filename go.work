@@ -18,6 +18,7 @@ use (
 	./kubeconfig-overridden-context
 	./label-selectors
 	./list-typed-simple
+	./patch-add-ephemeral-container
 	./retry-on-conflict
 	./serialize-typed-json
 	./serialize-typed-yaml
