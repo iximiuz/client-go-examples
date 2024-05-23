@@ -10,9 +10,9 @@ The intention is to test a (more or less) fresh version of Go and `k8s.io` packa
 
 What is tested at the moment:
 
-- `go 1.22.0`
-- `k8s.io/client-go 0.26.13 0.27.10 0.28.6 0.29.1` (maintained release branches)
-- `Kubernetes 1.26.14 1.27.11 1.28.7 1.29.2` (best-effort match with versions supported by `kind`)
+- `go 1.22.3`
+- `k8s.io/client-go 0.27.14 0.28.10 0.29.5 0.30.1` (maintained release branches)
+- `Kubernetes 1.27.13 1.28.9 1.29.4 1.30.0` (best-effort match with versions supported by `kind`)
 
 ## Setup
 

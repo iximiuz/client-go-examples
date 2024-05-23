@@ -1,8 +1,8 @@
 module github.com/iximiuz/client-go-examples/informer-dynamic-simple
 
-go 1.22.0
+go 1.22.3
 
 require (
-	k8s.io/apimachinery v0.28.3
-	k8s.io/client-go v0.28.3
+	k8s.io/apimachinery v0.30.1
+	k8s.io/client-go v0.30.1
 )
