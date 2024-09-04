@@ -158,9 +158,6 @@ func deleteConfigMap(client dynamic.Interface, cm *unstructured.Unstructured) {
 	if err != nil {
 		panic(err.Error())
 	}
-	if err != nil {
-		panic(err.Error())
-	}
 
 	fmt.Printf("Deleted ConfigMap %s/%s\n", cm.GetNamespace(), cm.GetName())
 }
