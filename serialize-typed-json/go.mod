@@ -1,6 +1,6 @@
 module github.com/iximiuz/client-go-examples/serialize-typed-json
 
-go 1.22.3
+go 1.23.4
 
 require (
 	k8s.io/api v0.30.1
