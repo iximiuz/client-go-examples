@@ -1,7 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: gomod
-    directory: /
+    directories:
+      - '**/*'
     groups:
       non-breaking-changes-security-updates:
         update-types: [minor, patch]
