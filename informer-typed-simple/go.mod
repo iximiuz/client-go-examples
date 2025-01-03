@@ -1,6 +1,6 @@
 module github.com/iximiuz/client-go-examples/informer-typed-simple
 
-go 1.22.3
+go 1.22.10
 
 require (
 	k8s.io/api v0.30.1
